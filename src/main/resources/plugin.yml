@@ -1,0 +1,11 @@
+name: HarderMC
+main: com.hardermc.HarderMC
+version: 1.0
+api-version: 1.21.8
+commands:
+  bms:
+    description: Displays blood moon stats
+    usage: /bms
+  rbms:
+    description: Displays stats for the most recent blood moon
+    usage: /rbms

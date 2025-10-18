@@ -2,6 +2,9 @@ package com.hardermc;
 
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -47,6 +50,10 @@ public class HarderMC extends JavaPlugin {
     pluginManager.registerEvents(fearSystem, this);
 
     getCommand("nextbm").setExecutor(new nextbm(this));
+
+    World world = Bukkit.getWorld("world");
+    if (world != null)
+      world.setDifficulty(Difficulty.HARD);
   }
 
   public void onDisable() {

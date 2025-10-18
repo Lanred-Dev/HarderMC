@@ -21,12 +21,12 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class PlayerFear implements Listener {
     private static final int FEAR_THRESHOLD = 6;
-    private static final int FEAR_DECAY_RATE = 20 * 2;
+    private static final int FEAR_DECAY_RATE = 2;
     private static final int FEAR_DECAY_AMOUNT = 1;
     private static final double MOB_FEAR_MULTIPLIER = 0.6;
     private static final double MAX_FEAR_LEVEL = 10.0;
     private static final double OUTSIDE_FEAR_LEVEL_INCREASE = 0.3;
-    private static final int FEAR_LASTS_FOR = 20 * 3;
+    private static final int FEAR_LASTS_FOR = 10;
     private Map<Player, Double> playerFearLevels = new HashMap<>();
     private Map<Player, Boolean> playersInFear = new HashMap<>();
     private final HarderMC plugin;
@@ -55,7 +55,7 @@ public class PlayerFear implements Listener {
             public void run() {
                 ticksSinceFearDecay += 1;
 
-                boolean shouldFearDecay = ticksSinceFearDecay >= FEAR_DECAY_RATE;
+                boolean shouldFearDecay = ticksSinceFearDecay >= plugin.utils.secondsToTicks(FEAR_DECAY_RATE);
                 if (shouldFearDecay)
                     ticksSinceFearDecay = 0;
 
@@ -91,9 +91,10 @@ public class PlayerFear implements Listener {
             return;
 
         playersInFear.put(player, true);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, FEAR_LASTS_FOR, 2));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, FEAR_LASTS_FOR, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, FEAR_LASTS_FOR, 1));
+        int fearLastsFor = plugin.utils.secondsToTicks(FEAR_LASTS_FOR);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, fearLastsFor, 2));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, fearLastsFor, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, fearLastsFor, 1));
         player.playSound(player.getLocation(), Sound.ENTITY_VEX_CHARGE, 1.0f, 1.0f);
         player.sendMessage("You feel a wave of fear wash over you...");
 
@@ -105,7 +106,7 @@ public class PlayerFear implements Listener {
 
                 playersInFear.put(player, false);
             }
-        }.runTaskLater(plugin, FEAR_LASTS_FOR);
+        }.runTaskLater(plugin, fearLastsFor);
     }
 
     private void updatePlayerFearBar(Player player, double playerFear) {

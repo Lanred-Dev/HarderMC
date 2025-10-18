@@ -1,4 +1,4 @@
-package com.hardermc;
+package com.hardermc.Systems;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import com.hardermc.HarderMC;
 
 public class PlayerStatTracker implements Listener {
     private final HarderMC plugin;

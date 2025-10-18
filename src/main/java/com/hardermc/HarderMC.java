@@ -13,6 +13,9 @@ import com.hardermc.Systems.LevelProgressor;
 import com.hardermc.Systems.PlayerStatTracker;
 import com.hardermc.Systems.StatMultiplier;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.World;
 import org.bukkit.event.Listener;
 
 public class HarderMC extends JavaPlugin implements Listener {
@@ -26,7 +29,6 @@ public class HarderMC extends JavaPlugin implements Listener {
   public LightningStorm lightningStorm;
   public TNTRain tntRain;
   public utils utils = new utils();
-
 
   public void onEnable() {
     LOGGER.info("HarderMC enabled");
@@ -48,6 +50,10 @@ public class HarderMC extends JavaPlugin implements Listener {
 
     getCommand("bms").setExecutor(new bms(this));
     getCommand("rbms").setExecutor(new rbms(this));
+
+    World world = Bukkit.getWorld("world");
+    if (world != null)
+      world.setDifficulty(Difficulty.HARD);
   }
 
   public void onDisable() {

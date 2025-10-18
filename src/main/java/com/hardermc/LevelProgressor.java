@@ -8,25 +8,28 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class LevelProgressor implements Listener {
+    private static final String HIGHEST_LEVEL_REACHED_KEY = "HIGHEST_LEVEL_REACHED";
     private static final int TARGET_LEVEL = 25;
     private final HarderMC plugin;
     public int level = 1;
+    public int highestLevelReached = 1;
 
     public LevelProgressor(HarderMC plugin) {
         this.plugin = plugin;
+        this.highestLevelReached = plugin.getConfig().getInt(HIGHEST_LEVEL_REACHED_KEY, 1);
         determineLevel();
     }
 
     private void determineLevel() {
-        int highestLevel = 1;
+        int highestPlayerLevel = 1;
 
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             int playerLevel = player.getLevel();
-            if (playerLevel > highestLevel)
-                highestLevel = playerLevel;
+            if (playerLevel > highestPlayerLevel)
+                highestPlayerLevel = playerLevel;
         }
 
-        setLevel(highestLevel);
+        setLevel(Math.max(highestPlayerLevel, highestLevelReached));
     }
 
     private void setLevel(int newLevel) {
@@ -36,6 +39,10 @@ public class LevelProgressor implements Listener {
         double multiplier = 1.0 + ((double) newLevel - 1) / (TARGET_LEVEL - 1);
         plugin.statMultiplier.globalMultiplier = multiplier;
         Bukkit.broadcastMessage(String.format("Blood moon level set to %d (%.2fx difficulty)", newLevel, multiplier));
+
+        highestLevelReached = Math.max(highestLevelReached, newLevel);
+        plugin.getConfig().set(HIGHEST_LEVEL_REACHED_KEY, highestLevelReached);
+        plugin.saveConfig();
     }
 
     @EventHandler

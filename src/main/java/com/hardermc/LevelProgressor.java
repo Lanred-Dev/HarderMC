@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class LevelProgressor implements Listener {
@@ -43,6 +44,11 @@ public class LevelProgressor implements Listener {
         highestLevelReached = Math.max(highestLevelReached, newLevel);
         plugin.getConfig().set(HIGHEST_LEVEL_REACHED_KEY, highestLevelReached);
         plugin.saveConfig();
+    }
+
+    @EventHandler
+    public void onLevelChange(PlayerLevelChangeEvent event) {
+        determineLevel();
     }
 
     @EventHandler

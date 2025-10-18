@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.hardermc.HarderMC;
 
 public class LevelProgressor implements Listener {
-    private static final String HIGHEST_LEVEL_REACHED_KEY = "HIGHEST_LEVEL_REACHED";
+    private static final String HIGHEST_LEVEL_REACHED_KEY = "highestLevelReached";
     private static final int TARGET_LEVEL = 25;
     private final HarderMC plugin;
     public int level = 1;

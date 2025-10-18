@@ -73,7 +73,7 @@ public class BloodMoon implements Listener {
             start();
         } else {
             Bukkit.broadcastMessage(
-                    String.format("%d until a blood moon", BLOOD_MOON_INTERVAL - daysSinceLastBloodMoon));
+                    String.format("%d days until a blood moon", BLOOD_MOON_INTERVAL - daysSinceLastBloodMoon));
         }
     }
 

@@ -5,6 +5,8 @@ import org.bukkit.World;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+// Intend to do more with this class in the future
+
 public class EventScheduler implements Listener {
     private final HarderMC plugin;
     private boolean wasNight = false;

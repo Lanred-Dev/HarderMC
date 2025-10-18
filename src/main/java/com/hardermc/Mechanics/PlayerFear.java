@@ -95,6 +95,7 @@ public class PlayerFear implements Listener {
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, fearLastsFor, 2));
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, fearLastsFor, 1));
         player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, fearLastsFor, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, fearLastsFor, 1, false, false));
         player.playSound(player.getLocation(), Sound.ENTITY_VEX_CHARGE, 1.0f, 1.0f);
         player.sendMessage("You feel a wave of fear wash over you...");
 

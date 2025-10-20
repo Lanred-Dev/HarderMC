@@ -44,7 +44,7 @@ public class Level implements Listener {
         plugin.mobHandler.globalMultiplier.remove(levelMultiplier);
 
         level = newLevel;
-        levelMultiplier = ((newLevel / BASE_TARGET_LEVEL) * 0.5) + 0.5;
+        levelMultiplier = (((double) newLevel / (double) BASE_TARGET_LEVEL) * 0.5) + 0.5;
         plugin.mobHandler.globalMultiplier.add(levelMultiplier);
 
         plugin.serverDataService.set(SAVED_LEVEL_KEY, newLevel);

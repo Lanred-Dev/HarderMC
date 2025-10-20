@@ -92,7 +92,8 @@ public class Scheduler {
 
     public void registerEvent(SchedulerEvent event) {
         if (plugin.serverDataService.has(event.EVENT_ID())) {
-            int value = (int) plugin.serverDataService.get(event.EVENT_ID(), 0);
+            double doubleValue = (double) plugin.serverDataService.get(event.EVENT_ID(), 0.0);
+            int value = (int) doubleValue;
 
             if (value < 0) {
                 value = Math.abs(value);

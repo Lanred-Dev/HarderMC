@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.hardermc.Commands.bdloc;
 import com.hardermc.Commands.level;
 import com.hardermc.Commands.nextbm;
+import com.hardermc.Commands.stats;
 import com.hardermc.Events.BloodMoon;
 import com.hardermc.Events.BossDungeon;
 import com.hardermc.Services.Reward;
@@ -62,6 +63,7 @@ public class HarderMC extends JavaPlugin {
     getCommand("nextbm").setExecutor(new nextbm(this));
     getCommand("bdloc").setExecutor(new bdloc(this));
     getCommand("level").setExecutor(new level(this));
+    getCommand("stats").setExecutor(new stats(this));
 
     World world = Bukkit.getWorld("world");
     if (world != null)

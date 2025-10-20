@@ -12,3 +12,6 @@ commands:
   level:
     description: Get the current level of the server.
     usage: /level
+  stats:
+    description: Get the stats of every player in the server.
+    usage: /stats

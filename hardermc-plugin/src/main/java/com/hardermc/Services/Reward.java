@@ -23,7 +23,9 @@ public class Reward implements Listener {
                     Material.LEATHER_LEGGINGS,
                     Material.LEATHER_BOOTS,
                     Material.IRON_INGOT,
-                    Material.BREAD)),
+                    Material.BREAD,
+                    Material.STONE_PICKAXE,
+                    Material.APPLE)),
             Map.entry(ItemTier.UNCOMMON, List.of(
                     Material.IRON_SWORD,
                     Material.BOW,
@@ -33,7 +35,9 @@ public class Reward implements Listener {
                     Material.IRON_BOOTS,
                     Material.GOLD_INGOT,
                     Material.COOKED_BEEF,
-                    Material.CROSSBOW)),
+                    Material.CROSSBOW,
+                    Material.IRON_PICKAXE,
+                    Material.SHIELD)),
             Map.entry(ItemTier.RARE, List.of(
                     Material.DIAMOND_SWORD,
                     Material.DIAMOND_HELMET,
@@ -42,7 +46,9 @@ public class Reward implements Listener {
                     Material.DIAMOND_BOOTS,
                     Material.DIAMOND,
                     Material.EMERALD,
-                    Material.SHULKER_BOX)),
+                    Material.SHULKER_BOX,
+                    Material.DIAMOND_PICKAXE,
+                    Material.TOTEM_OF_UNDYING)),
             Map.entry(ItemTier.EPIC, List.of(
                     Material.NETHERITE_SWORD,
                     Material.TRIDENT,
@@ -53,11 +59,15 @@ public class Reward implements Listener {
                     Material.NETHERITE_INGOT,
                     Material.GOLDEN_APPLE,
                     Material.HEART_OF_THE_SEA,
-                    Material.MACE)),
+                    Material.CROSSBOW,
+                    Material.SHULKER_BOX)),
             Map.entry(ItemTier.LEGENDARY, List.of(
                     Material.ENCHANTED_GOLDEN_APPLE,
                     Material.TOTEM_OF_UNDYING,
-                    Material.ELYTRA)));
+                    Material.ELYTRA,
+                    Material.NETHERITE_SWORD,
+                    Material.NETHERITE_PICKAXE,
+                    Material.TRIDENT)));
     private final HarderMC plugin;
 
     public Reward(HarderMC plugin) {
@@ -65,16 +75,26 @@ public class Reward implements Listener {
     }
 
     private static enum ItemTier {
-        COMMON(0.25), UNCOMMON(0.50), RARE(0.75), EPIC(1.00), LEGENDARY(1.50);
+        COMMON(0.49, -0.2),
+        UNCOMMON(0.30, 0.05),
+        RARE(0.40, 0.15),
+        EPIC(0.10, 0.3),
+        LEGENDARY(0.01, 0.5);
 
-        private final double value;
+        private final double chance;
+        private final double multiplierWeight;
 
-        ItemTier(double value) {
-            this.value = value;
+        ItemTier(double chance, double multiplierWeight) {
+            this.chance = chance;
+            this.multiplierWeight = multiplierWeight;
         }
 
-        public double value() {
-            return value - 0.25;
+        public double chance() {
+            return chance;
+        }
+
+        public double multiplierWeight() {
+            return multiplierWeight;
         }
     }
 
@@ -96,22 +116,25 @@ public class Reward implements Listener {
     }
 
     private static ItemTier rollForTier(double multiplierLevel) {
-        double shift = 0.15 * (multiplierLevel - 1);
-        double legendaryTierValue = ItemTier.LEGENDARY.value();
-        double roll = Math.min((Math.random() * legendaryTierValue) + shift, legendaryTierValue);
+        double[] scaledChances = new double[ItemTier.values().length];
 
-        ItemTier previous = null;
-
-        for (ItemTier tier : ItemTier.values()) {
-            double lower = previous == null ? 0 : previous.value();
-            double upper = tier.value();
-
-            if (roll <= upper && roll > lower)
-                return tier;
-
-            previous = tier;
+        for (int index = 0; index < ItemTier.values().length; index++) {
+            ItemTier tier = ItemTier.values()[index];
+            scaledChances[index] = tier.chance() * Math.pow(multiplierLevel, tier.multiplierWeight());
         }
 
-        return ItemTier.LEGENDARY;
+        double roll = Math.random() * Utils.sumArray(scaledChances);
+        double cumulativeChance = 0;
+
+        for (int index = 0; index < ItemTier.values().length; index++) {
+            ItemTier tier = ItemTier.values()[index];
+            cumulativeChance += scaledChances[index];
+
+            if (roll <= cumulativeChance)
+                return tier;
+        }
+
+        // This should not happen but just incase
+        return ItemTier.COMMON;
     }
 }

@@ -71,4 +71,8 @@ public class ServerData {
     public boolean has(String key) {
         return data.containsKey(key);
     }
+
+    public void remove(String key) {
+        data.remove(key);
+    }
 }

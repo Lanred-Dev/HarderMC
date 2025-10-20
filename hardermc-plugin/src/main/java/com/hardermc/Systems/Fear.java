@@ -27,7 +27,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class Fear implements Listener {
-    private static final int DECAY_RATE = Utils.secondsToTicks(3);
+    private static final int DECAY_RATE = Utils.secondsToTicks(2);
     private static final double DECAY_AMOUNT = 1.0;
     private static final int DURATION = Utils.secondsToTicks(60);
     private static final double BREAK_THRESHOLD = 10.0;

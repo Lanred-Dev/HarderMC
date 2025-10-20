@@ -15,6 +15,7 @@ public class Level implements Listener {
     private final HarderMC plugin;
     public int level;
     public double levelMultiplier;
+    private int accumulatedPlayerLevels = 0;
 
     public Level(HarderMC plugin) {
         this.plugin = plugin;
@@ -24,15 +25,15 @@ public class Level implements Listener {
     private void determineLevelFromPlayers() {
         HarderMC.LOGGER.info("Determining level based on online players");
 
-        int highestPlayerLevel = 0;
+        accumulatedPlayerLevels = 0;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            highestPlayerLevel = Math.max(highestPlayerLevel, player.getLevel());
+            accumulatedPlayerLevels += player.getLevel();
         }
 
         // This is required because players can loose XP
-        if (highestPlayerLevel > this.level)
-            setLevel(highestPlayerLevel);
+        if (accumulatedPlayerLevels > this.level)
+            setLevel(accumulatedPlayerLevels);
     }
 
     public void setLevel(int newLevel) {

@@ -57,7 +57,6 @@ public class BossDungeon extends SchedulerEvent implements Listener {
             new ItemStack(Material.REDSTONE, 16),
             new ItemStack(Material.DIAMOND, 8),
             new ItemStack(Material.EMERALD, 4),
-            new ItemStack(Material.NETHERITE_INGOT, 2)
     };
     private final Structure dungeonStructure;
     private boolean hasBeaten;

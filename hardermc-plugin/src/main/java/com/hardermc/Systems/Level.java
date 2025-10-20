@@ -19,7 +19,9 @@ public class Level implements Listener {
 
     public Level(HarderMC plugin) {
         this.plugin = plugin;
-        setLevel((int) plugin.serverDataService.get(SAVED_LEVEL_KEY, 0));
+
+        double savedLevel = (double) plugin.serverDataService.get(SAVED_LEVEL_KEY, 0.0);
+        setLevel((int) savedLevel);
     }
 
     private void determineLevelFromPlayers() {

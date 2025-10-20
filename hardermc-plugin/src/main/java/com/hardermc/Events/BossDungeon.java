@@ -16,6 +16,7 @@ import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -165,7 +166,12 @@ public class BossDungeon extends SchedulerEvent implements Listener {
             return;
 
         offering = Utils.randomEntryFromArray(OFFERINGS);
-        location = new Location(Bukkit.getWorlds().get(0), 0, 100, 0);
+        Location location = Utils.getRandomPositionAroundPlayer(
+                Utils.randomEntryFromArray(Bukkit.getOnlinePlayers().toArray(new Player[0])),
+                1500,
+                100,
+                5,
+                80);
         dungeonStructure.place(
                 location,
                 false,

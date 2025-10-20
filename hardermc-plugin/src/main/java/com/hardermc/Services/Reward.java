@@ -14,59 +14,58 @@ import com.hardermc.Utils;
 public class Reward implements Listener {
     private static final int BASE_REWARD_COUNT = 4;
     private static final double BASE_REWARD_MULTIPLIER = 0.3;
-    private static final Map<ItemTier, List<Material>> ITEMS = Map.ofEntries(
+    private static final Map<ItemTier, List<ItemStack>> ITEMS = Map.ofEntries(
             Map.entry(ItemTier.COMMON, List.of(
-                    Material.STONE_SWORD,
-                    Material.LEATHER_HELMET,
-                    Material.LEATHER_CHESTPLATE,
-                    Material.LEATHER_LEGGINGS,
-                    Material.LEATHER_BOOTS,
-                    Material.IRON_INGOT,
-                    Material.BREAD,
-                    Material.STONE_PICKAXE,
-                    Material.APPLE)),
+                    new ItemStack(Material.STONE_SWORD),
+                    new ItemStack(Material.LEATHER_HELMET),
+                    new ItemStack(Material.LEATHER_CHESTPLATE),
+                    new ItemStack(Material.LEATHER_LEGGINGS),
+                    new ItemStack(Material.LEATHER_BOOTS),
+                    new ItemStack(Material.IRON_INGOT, 8),
+                    new ItemStack(Material.BREAD, 5),
+                    new ItemStack(Material.STONE_PICKAXE),
+                    new ItemStack(Material.APPLE, 5))),
             Map.entry(ItemTier.UNCOMMON, List.of(
-                    Material.IRON_SWORD,
-                    Material.BOW,
-                    Material.IRON_HELMET,
-                    Material.IRON_CHESTPLATE,
-                    Material.IRON_LEGGINGS,
-                    Material.IRON_BOOTS,
-                    Material.GOLD_INGOT,
-                    Material.COOKED_BEEF,
-                    Material.CROSSBOW,
-                    Material.IRON_PICKAXE,
-                    Material.SHIELD)),
+                    new ItemStack(Material.IRON_SWORD),
+                    new ItemStack(Material.BOW),
+                    new ItemStack(Material.IRON_HELMET),
+                    new ItemStack(Material.IRON_CHESTPLATE),
+                    new ItemStack(Material.IRON_LEGGINGS),
+                    new ItemStack(Material.IRON_BOOTS),
+                    new ItemStack(Material.GOLD_INGOT, 5),
+                    new ItemStack(Material.COOKED_BEEF, 5),
+                    new ItemStack(Material.CROSSBOW),
+                    new ItemStack(Material.IRON_PICKAXE),
+                    new ItemStack(Material.SHIELD))),
             Map.entry(ItemTier.RARE, List.of(
-                    Material.DIAMOND_SWORD,
-                    Material.DIAMOND_HELMET,
-                    Material.DIAMOND_CHESTPLATE,
-                    Material.DIAMOND_LEGGINGS,
-                    Material.DIAMOND_BOOTS,
-                    Material.DIAMOND,
-                    Material.EMERALD,
-                    Material.SHULKER_BOX,
-                    Material.DIAMOND_PICKAXE,
-                    Material.TOTEM_OF_UNDYING)),
+                    new ItemStack(Material.DIAMOND_SWORD),
+                    new ItemStack(Material.DIAMOND_HELMET),
+                    new ItemStack(Material.DIAMOND_CHESTPLATE),
+                    new ItemStack(Material.DIAMOND_LEGGINGS),
+                    new ItemStack(Material.DIAMOND_BOOTS),
+                    new ItemStack(Material.DIAMOND, 3),
+                    new ItemStack(Material.EMERALD, 3),
+                    new ItemStack(Material.DIAMOND_PICKAXE),
+                    new ItemStack(Material.TOTEM_OF_UNDYING))),
             Map.entry(ItemTier.EPIC, List.of(
-                    Material.NETHERITE_SWORD,
-                    Material.TRIDENT,
-                    Material.NETHERITE_HELMET,
-                    Material.NETHERITE_CHESTPLATE,
-                    Material.NETHERITE_LEGGINGS,
-                    Material.NETHERITE_BOOTS,
-                    Material.NETHERITE_INGOT,
-                    Material.GOLDEN_APPLE,
-                    Material.HEART_OF_THE_SEA,
-                    Material.CROSSBOW,
-                    Material.SHULKER_BOX)),
+                    new ItemStack(Material.NETHERITE_SWORD),
+                    new ItemStack(Material.TRIDENT),
+                    new ItemStack(Material.NETHERITE_HELMET),
+                    new ItemStack(Material.NETHERITE_CHESTPLATE),
+                    new ItemStack(Material.NETHERITE_LEGGINGS),
+                    new ItemStack(Material.NETHERITE_BOOTS),
+                    new ItemStack(Material.NETHERITE_INGOT, 2),
+                    new ItemStack(Material.GOLDEN_APPLE, 2),
+                    new ItemStack(Material.HEART_OF_THE_SEA),
+                    new ItemStack(Material.CROSSBOW),
+                    new ItemStack(Material.SHULKER_BOX))),
             Map.entry(ItemTier.LEGENDARY, List.of(
-                    Material.ENCHANTED_GOLDEN_APPLE,
-                    Material.TOTEM_OF_UNDYING,
-                    Material.ELYTRA,
-                    Material.NETHERITE_SWORD,
-                    Material.NETHERITE_PICKAXE,
-                    Material.TRIDENT)));
+                    new ItemStack(Material.ENCHANTED_GOLDEN_APPLE),
+                    new ItemStack(Material.TOTEM_OF_UNDYING),
+                    new ItemStack(Material.ELYTRA),
+                    new ItemStack(Material.NETHERITE_SWORD),
+                    new ItemStack(Material.NETHERITE_PICKAXE),
+                    new ItemStack(Material.TRIDENT))));
     private final HarderMC plugin;
 
     public Reward(HarderMC plugin) {
@@ -101,8 +100,8 @@ public class Reward implements Listener {
         List<ItemStack> rewardedItems = new ArrayList<>();
 
         for (int i = 0; i < rewardCount; i++) {
-            Material item = Utils.randomEntryFromList(ITEMS.get(rollForTier(multiplierLevel)));
-            rewardedItems.add(new ItemStack(item, 1));
+            ItemStack item = Utils.randomEntryFromList(ITEMS.get(rollForTier(multiplierLevel)));
+            rewardedItems.add(item.clone());
         }
 
         return rewardedItems;

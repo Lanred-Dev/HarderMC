@@ -22,6 +22,9 @@ public abstract class SchedulerEvent {
 
     protected SchedulerEvent(HarderMC plugin) {
         this.plugin = plugin;
+    }
+
+    protected void initialize() {
         plugin.scheduler.registerEvent(this);
     }
 

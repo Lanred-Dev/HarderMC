@@ -30,10 +30,10 @@ public class Fear implements Listener {
     private static final int DECAY_RATE = Utils.secondsToTicks(3);
     private static final double DECAY_AMOUNT = 1.0;
     private static final int DURATION = Utils.secondsToTicks(60);
-    private static final double BREAK_THRESHOLD = 7.0;
+    private static final double BREAK_THRESHOLD = 10.0;
     private static final double MAX_LEVEL = 10.0;
-    private static final double OUTSIDE_LEVEL_INCREASE = 0.15;
-    private static final double PER_MOB_MULTIPLIER = 0.05;
+    private static final double OUTSIDE_LEVEL_INCREASE = 0.05;
+    private static final double PER_MOB_MULTIPLIER = 0.025;
     private final HarderMC plugin;
     private Map<Player, Double> fearLevels = new HashMap<>();
     private Map<Player, Boolean> inFear = new HashMap<>();
@@ -90,11 +90,11 @@ public class Fear implements Listener {
         HarderMC.LOGGER.info(String.format("Apply fear effects to %s", player.getName()));
 
         inFear.put(player, true);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, DURATION, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, DURATION, 1));
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, DURATION, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, DURATION, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, DURATION, 1));
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, DURATION, 1, false, false));
-        player.playSound(player.getLocation(), Sound.ENTITY_VEX_CHARGE, 1.0f, 1.0f);
+        player.playSound(player.getLocation(), Sound.ENTITY_WARDEN_HEARTBEAT, 1.0f, 1.0f);
         player.sendMessage("You feel a wave of fear wash over you...");
 
         new BukkitRunnable() {

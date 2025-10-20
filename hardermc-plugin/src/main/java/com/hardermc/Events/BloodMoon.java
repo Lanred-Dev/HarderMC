@@ -50,6 +50,7 @@ public class BloodMoon extends SchedulerEvent implements Listener {
 
     public BloodMoon(HarderMC plugin) {
         super(plugin);
+        initialize();
     }
 
     @Override

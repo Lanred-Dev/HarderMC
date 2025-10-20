@@ -87,6 +87,7 @@ public class BossDungeon extends SchedulerEvent implements Listener {
         }
 
         dungeonStructure = structure;
+        initialize();
     }
 
     @Override

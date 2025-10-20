@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerLevelChangeEvent;
 import com.hardermc.HarderMC;
 
 public class Level implements Listener {
-    private final static int BASE_TARGET_LEVEL = 25;
+    private final static int BASE_TARGET_LEVEL = 30;
     private static final String SAVED_LEVEL_KEY = "LEVEL";
     private final HarderMC plugin;
     public int level;

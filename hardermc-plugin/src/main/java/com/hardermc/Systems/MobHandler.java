@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,19 +19,22 @@ public class MobHandler implements Listener {
     private final HarderMC plugin;
     public final MultiplierGroup globalMultiplier = new MultiplierGroup(3.0);
     public final MultiplierGroup spawnRateMultiplier = new MultiplierGroup(5.0);
-    public final MultiplierGroup healthMultiplier = new MultiplierGroup(Utils.MAX_ENTITY_HEALTH);
-    public final MultiplierGroup damageMultiplier = new MultiplierGroup(Utils.MAX_ENTITY_DAMAGE);
-    public final MultiplierGroup speedMultiplier = new MultiplierGroup(Utils.MAX_ENTITY_SPEED);
-    private final List<Pair<Attribute, MultiplierGroup>> MOB_ATTRIBUTES = List.of(
-            new Pair<>(Attribute.GENERIC_MAX_HEALTH, healthMultiplier),
-            new Pair<>(Attribute.GENERIC_ATTACK_DAMAGE, damageMultiplier),
-            new Pair<>(Attribute.GENERIC_MOVEMENT_SPEED, speedMultiplier));
-    private final EntityType[] SPAWNABLE_MOBS = {
+    public final MultiplierGroup healthMultiplier = new MultiplierGroup(
+            Utils.MAX_ATTRIBUTE_VALUES.get(Attribute.MAX_HEALTH));
+    public final MultiplierGroup damageMultiplier = new MultiplierGroup(
+            Utils.MAX_ATTRIBUTE_VALUES.get(Attribute.ATTACK_DAMAGE));
+    public final MultiplierGroup speedMultiplier = new MultiplierGroup(
+            Utils.MAX_ATTRIBUTE_VALUES.get(Attribute.MOVEMENT_SPEED));
+    // This is not static because it uses instance variables
+    private final List<Pair<Attribute, MultiplierGroup>> MULTIPLIED_MOB_ATTRIBUTES = List.of(
+            new Pair<>(Attribute.MAX_HEALTH, healthMultiplier),
+            new Pair<>(Attribute.ATTACK_DAMAGE, damageMultiplier),
+            new Pair<>(Attribute.MOVEMENT_SPEED, speedMultiplier));
+    private static final EntityType[] SPAWNABLE_MOB_TYPES = {
             EntityType.ZOMBIE,
             EntityType.SKELETON,
             EntityType.CREEPER,
             EntityType.SPIDER,
-            EntityType.ENDERMAN,
             EntityType.WITCH,
             EntityType.HUSK,
             EntityType.STRAY,
@@ -43,24 +47,26 @@ public class MobHandler implements Listener {
 
     @EventHandler
     public void onMonsterSpawn(CreatureSpawnEvent event) {
-        if (!(event.getEntity() instanceof Monster mob))
+        LivingEntity entity = event.getEntity();
+
+        if (!(entity instanceof Monster) || entity.getPersistentDataContainer().has(plugin.bossDungeonEvent.BOSS_KEY))
             return;
 
         // Only modify naturally spawned mobs, otherwise infinite loops could occur
         if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL) {
             for (int index = 0; index < Math.floor(spawnRateMultiplier.getTotal()); index++) {
                 event.getLocation().getWorld().spawnEntity(event.getLocation(),
-                        Utils.randomEntryFromArray(SPAWNABLE_MOBS));
+                        Utils.randomEntryFromArray(SPAWNABLE_MOB_TYPES));
             }
         }
 
-        for (Pair<Attribute, MultiplierGroup> attributePair : MOB_ATTRIBUTES) {
-            mob.getAttribute(attributePair.first()).setBaseValue(
-                    mob.getAttribute(attributePair.first()).getBaseValue()
+        for (Pair<Attribute, MultiplierGroup> attributePair : MULTIPLIED_MOB_ATTRIBUTES) {
+            entity.getAttribute(attributePair.first()).setBaseValue(
+                    entity.getAttribute(attributePair.first()).getBaseValue()
                             * attributePair.second().getTotal());
         }
 
-        mob.setCustomName(String.format("%d level %s", plugin.levelSystem.level,
-                mob.getType().toString().toLowerCase().replace('_', ' ')));
+        entity.setCustomName(String.format("Level %d %s", plugin.levelSystem.level,
+                entity.getType().toString().toLowerCase().replace('_', ' ')));
     }
 }

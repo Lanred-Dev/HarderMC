@@ -6,3 +6,9 @@ commands:
   nextbm:
     description: Get the time until the next Blood Moon.
     usage: /nextbm
+  bdloc:
+    description: Get the location of the Boss Dungeon.
+    usage: /bdloc
+  level:
+    description: Get the current level of the server.
+    usage: /level

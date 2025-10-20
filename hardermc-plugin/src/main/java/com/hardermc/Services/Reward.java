@@ -16,7 +16,6 @@ public class Reward implements Listener {
     private static final double BASE_REWARD_MULTIPLIER = 0.3;
     private static final Map<ItemTier, List<Material>> ITEMS = Map.ofEntries(
             Map.entry(ItemTier.COMMON, List.of(
-                    Material.WOODEN_SWORD,
                     Material.STONE_SWORD,
                     Material.LEATHER_HELMET,
                     Material.LEATHER_CHESTPLATE,
@@ -75,11 +74,11 @@ public class Reward implements Listener {
     }
 
     private static enum ItemTier {
-        COMMON(0.49, -0.2),
-        UNCOMMON(0.30, 0.05),
-        RARE(0.40, 0.15),
-        EPIC(0.10, 0.3),
-        LEGENDARY(0.01, 0.5);
+        COMMON(0.40, -0.10),
+        UNCOMMON(0.30, 0.00),
+        RARE(0.20, 0.10),
+        EPIC(0.08, 0.15),
+        LEGENDARY(0.02, 0.10);
 
         private final double chance;
         private final double multiplierWeight;

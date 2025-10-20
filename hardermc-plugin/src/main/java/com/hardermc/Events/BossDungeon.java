@@ -225,7 +225,6 @@ public class BossDungeon extends SchedulerEvent implements Listener {
 
             if (offeringsInChest >= offering.getAmount()) {
                 chest.getInventory().clear();
-                chest.setType(Material.AIR);
                 spawnBoss();
             } else {
                 Bukkit.broadcastMessage(String.format("%d more offerings needed to start Boss Dungeon.",

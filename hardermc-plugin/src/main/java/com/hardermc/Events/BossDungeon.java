@@ -240,6 +240,9 @@ public class BossDungeon extends SchedulerEvent implements Listener {
         if (!isActive() || !entity.getPersistentDataContainer().has(BOSS_KEY))
             return;
 
+        event.getDrops().clear();
+        event.setDroppedExp(0);
+
         for (ItemStack reward : plugin.rewardService.getRewards(1.5)) {
             entity.getWorld().dropItemNaturally(entity.getLocation(), reward);
         }

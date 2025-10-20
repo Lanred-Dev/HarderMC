@@ -37,22 +37,27 @@ import com.hardermc.Systems.Scheduler.TimeOfDay;
 
 public class BossDungeon extends SchedulerEvent implements Listener {
     public final NamespacedKey BOSS_KEY;
+    private static final double ON_DEFEAT_REWARD_MULTIPLIER = 1.8;
     private static final String DUNGEON_STRUCTURE_FILE_NAME = "structures/boss_dungeon.nbt";
     private static final EntityType[] BOSS_TYPES = {
             EntityType.ZOMBIE,
     };
     private static final List<Pair<Attribute, Double>> MULTIPLIED_BOSS_ATTRIBUTES = List.of(
             new Pair<>(Attribute.MAX_HEALTH, 5.0),
-            new Pair<>(Attribute.ATTACK_DAMAGE, 2.75),
+            new Pair<>(Attribute.ATTACK_DAMAGE, 3.0),
             new Pair<>(Attribute.MOVEMENT_SPEED, 1.25),
             new Pair<>(Attribute.FOLLOW_RANGE, 5.0),
             new Pair<>(Attribute.KNOCKBACK_RESISTANCE, 5.0));
     private static final ItemStack[] OFFERINGS = {
+            new ItemStack(Material.COPPER_INGOT, 64),
+            new ItemStack(Material.COAL, 48),
             new ItemStack(Material.IRON_INGOT, 32),
+            new ItemStack(Material.LAPIS_LAZULI, 24),
             new ItemStack(Material.GOLD_INGOT, 16),
+            new ItemStack(Material.REDSTONE, 16),
             new ItemStack(Material.DIAMOND, 8),
-            new ItemStack(Material.EMERALD, 8),
-            new ItemStack(Material.NETHERITE_INGOT, 4),
+            new ItemStack(Material.EMERALD, 4),
+            new ItemStack(Material.NETHERITE_INGOT, 2)
     };
     private final Structure dungeonStructure;
     private boolean hasBeaten;
@@ -243,7 +248,7 @@ public class BossDungeon extends SchedulerEvent implements Listener {
         event.getDrops().clear();
         event.setDroppedExp(0);
 
-        for (ItemStack reward : plugin.rewardService.getRewards(1.5)) {
+        for (ItemStack reward : plugin.rewardService.getRewards(ON_DEFEAT_REWARD_MULTIPLIER)) {
             entity.getWorld().dropItemNaturally(entity.getLocation(), reward);
         }
 

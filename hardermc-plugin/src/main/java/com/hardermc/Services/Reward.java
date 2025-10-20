@@ -132,7 +132,7 @@ public class Reward implements Listener {
                 return tier;
         }
 
-        // This should not happen but just incase
+        // This should not happen but just in case
         return ItemTier.COMMON;
     }
 }

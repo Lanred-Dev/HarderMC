@@ -33,9 +33,9 @@ import com.hardermc.Systems.Scheduler.TimeOfDay;
 
 public class BloodMoon extends SchedulerEvent implements Listener {
     private final static int LIGHTNING_STORM_RADIUS = 30;
-    private final static int LIGHTNING_STORM_FREQUENCY = Utils.secondsToTicks(3);
+    private final static int LIGHTNING_STORM_FREQUENCY = Utils.secondsToTicks(5);
     private final static int TNT_RAIN_RADIUS = 30;
-    private final static int TNT_RAIN_FREQUENCY = Utils.secondsToTicks(1.5);
+    private final static int TNT_RAIN_FREQUENCY = Utils.secondsToTicks(2.2);
     private final static Map<Integer, String> NIGHT_MARKERS = Map.ofEntries(
             Map.entry(10, "You are 10% through the night."),
             Map.entry(25, "You are 25% through the night."),

@@ -29,6 +29,16 @@ public final class Utils {
         return (int) (seconds * TICKS_PER_SECOND);
     }
 
+    public static double sumArray(double[] array) {
+        double sum = 0.0;
+
+        for (double value : array) {
+            sum += value;
+        }
+
+        return sum;
+    }
+
     public static <T> T randomEntryFromArray(T[] array) {
         return array[(int) (Math.random() * array.length)];
     }

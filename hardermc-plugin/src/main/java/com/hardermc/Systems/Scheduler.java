@@ -15,11 +15,12 @@ import com.hardermc.Objects.SchedulerEvent;
 public class Scheduler {
     public static final int NIGHT_START_TIME = 13000;
     public static final int NIGHT_END_TIME = 23000;
-    private final List<String> currentEvents = new ArrayList<>();
+    private final Map<String, Integer> currentEvents = new HashMap<>();
     private final Map<String, Integer> eventTimers = new HashMap<>();
     private final List<SchedulerEvent> scheduledEvents = new ArrayList<>();
     public TimeOfDay currentTimeOfDay;
     private TimeOfDay lastTimeOfDay;
+    private final HarderMC plugin;
 
     public static enum TimeOfDay {
         NIGHT,
@@ -27,6 +28,8 @@ public class Scheduler {
     }
 
     public Scheduler(HarderMC plugin) {
+        this.plugin = plugin;
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -51,10 +54,21 @@ public class Scheduler {
                             if (daysUntilEvent <= 0) {
                                 startEvent(event);
                             } else {
-                                eventTimers.put(eventID, daysUntilEvent - 1);
+                                daysUntilEvent--;
+                                eventTimers.put(eventID, daysUntilEvent);
+                                plugin.serverDataService.set(eventID, daysUntilEvent);
                             }
-                        } else if (currentTimeOfDay == event.EVENT_ENDS_AT() && isActive) {
-                            restartEvent(event);
+                        } else if (currentTimeOfDay == event.EVENT_ENDS_AT() && isActive
+                                && currentEvents.get(eventID) <= 0) {
+                            endEvent(event);
+                        } else if (isActive && currentTimeOfDay == event.EVENT_ENDS_AT()) {
+                            int daysLeft = currentEvents.get(eventID) - 1;
+
+                            if (daysLeft > 0) {
+                                event.onDayPassed();
+                                currentEvents.put(eventID, daysLeft);
+                                plugin.serverDataService.set(eventID, -daysLeft);
+                            }
                         }
                     }
                 }
@@ -65,29 +79,51 @@ public class Scheduler {
     }
 
     public boolean isEventActive(String eventID) {
-        return currentEvents.contains(eventID);
+        return currentEvents.containsKey(eventID);
     }
 
     public int getDaysUntilEvent(String eventID) {
         return eventTimers.getOrDefault(eventID, -1);
     }
 
-    public void registerEvent(SchedulerEvent event) {
-        eventTimers.put(event.EVENT_ID(), event.EVENT_INTERVAL());
-        scheduledEvents.add(event);
-        HarderMC.LOGGER.info(String.format("Registered scheduler event: %s", event.EVENT_ID()));
+    public int getDaysLeftInEvent(String eventID) {
+        return currentEvents.getOrDefault(eventID, -1);
     }
 
-    private void restartEvent(SchedulerEvent event) {
+    public void registerEvent(SchedulerEvent event) {
+        if (plugin.serverDataService.has(event.EVENT_ID())) {
+            int value = (int) plugin.serverDataService.get(event.EVENT_ID(), 0);
+
+            if (value < 0) {
+                value = Math.abs(value);
+                event.start();
+                currentEvents.put(event.EVENT_ID(), value);
+                eventTimers.put(event.EVENT_ID(), 0);
+                HarderMC.LOGGER
+                        .info(String.format("Event %s started because it was previously running", event.EVENT_ID()));
+            } else {
+                eventTimers.put(event.EVENT_ID(), value);
+            }
+        } else {
+            eventTimers.put(event.EVENT_ID(), event.EVENT_INTERVAL() + event.EVENT_DELAY_BEFORE_FIRST_START());
+        }
+
+        scheduledEvents.add(event);
+        HarderMC.LOGGER.info(String.format("Registered %s with the scheduler", event.EVENT_ID()));
+    }
+
+    private void endEvent(SchedulerEvent event) {
         event.end();
         currentEvents.remove(event.EVENT_ID());
         eventTimers.put(event.EVENT_ID(), event.EVENT_INTERVAL());
-        HarderMC.LOGGER.info(String.format("Event %s restarted", event.EVENT_ID()));
+        plugin.serverDataService.set(event.EVENT_ID(), event.EVENT_INTERVAL());
+        HarderMC.LOGGER.info(String.format("Event %s ended", event.EVENT_ID()));
     }
 
     private void startEvent(SchedulerEvent event) {
         event.start();
-        currentEvents.add(event.EVENT_ID());
+        currentEvents.put(event.EVENT_ID(), event.EVENT_LASTS_FOR());
+        plugin.serverDataService.set(event.EVENT_ID(), -event.EVENT_LASTS_FOR());
         HarderMC.LOGGER.info(String.format("Event %s started", event.EVENT_ID()));
     }
 }

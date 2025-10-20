@@ -1,6 +1,8 @@
 package com.hardermc.Events;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -18,6 +20,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,20 +33,27 @@ import com.hardermc.Systems.Scheduler.TimeOfDay;
 
 public class BloodMoon extends SchedulerEvent implements Listener {
     private final static int LIGHTNING_STORM_RADIUS = 30;
-    private final static int LIGHTNING_STORM_FREQUENCY = Utils.secondsToTicks(1);
+    private final static int LIGHTNING_STORM_FREQUENCY = Utils.secondsToTicks(3);
     private final static int TNT_RAIN_RADIUS = 30;
-    private final static int TNT_RAIN_FREQUENCY = Utils.secondsToTicks(0.1);
-    private static final double GLOBAL_MOB_MULTIPLIER = 5.0;
+    private final static int TNT_RAIN_FREQUENCY = Utils.secondsToTicks(1.5);
+    private final static Map<Integer, String> NIGHT_MARKERS = Map.ofEntries(
+            Map.entry(10, "You are 10% through the night."),
+            Map.entry(25, "You are 25% through the night."),
+            Map.entry(50, "You are halfway through the night."),
+            Map.entry(75, "You are 75% through the night."),
+            Map.entry(90, "You are 90% through the night."));
+    private static final double GLOBAL_MOB_MULTIPLIER = 10.0;
     private final Map<Player, Integer> kills = new HashMap<>();
     private final Map<Player, Integer> deaths = new HashMap<>();
-    private boolean hasReachedHalfway = false;
+    private List<Integer> broadcastedNightMarkers;
+    private boolean allPlayersStayedAlive = true;
 
     public BloodMoon(HarderMC plugin) {
         super(plugin);
     }
 
     @Override
-    public Integer EVENT_INTERVAL() {
+    public int EVENT_INTERVAL() {
         return 7;
     }
 
@@ -58,6 +68,11 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     }
 
     @Override
+    public int EVENT_LASTS_FOR() {
+        return 0;
+    }
+
+    @Override
     public String EVENT_ID() {
         return "BLOOD_MOON";
     }
@@ -65,6 +80,9 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     @Override
     public void start() {
         Bukkit.broadcastMessage("The Blood Moon is rising...");
+
+        allPlayersStayedAlive = true;
+        broadcastedNightMarkers = new ArrayList<>();
 
         kills.clear();
         deaths.clear();
@@ -92,11 +110,17 @@ public class BloodMoon extends SchedulerEvent implements Listener {
 
                 long currentTime = world.getTime() - 10L;
                 world.setTime(currentTime);
+                double percentageThroughNight = ((double) (currentTime - Scheduler.NIGHT_START_TIME)
+                        / (Scheduler.NIGHT_END_TIME - Scheduler.NIGHT_START_TIME)) * 100.0;
 
-                if (!hasReachedHalfway && currentTime >= (Scheduler.NIGHT_START_TIME
-                        + (Scheduler.NIGHT_END_TIME - Scheduler.NIGHT_START_TIME) / 2)) {
-                    hasReachedHalfway = true;
-                    Bukkit.broadcastMessage("You have survived half of the night...");
+                for (Map.Entry<Integer, String> entry : NIGHT_MARKERS.entrySet()) {
+                    int key = entry.getKey();
+
+                    if (percentageThroughNight < key || broadcastedNightMarkers.contains(key))
+                        continue;
+
+                    Bukkit.broadcastMessage(entry.getValue());
+                    broadcastedNightMarkers.add(key);
                 }
             }
         }.runTaskTimer(plugin, 0L, 20L);
@@ -105,6 +129,16 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     @Override
     public void end() {
         Bukkit.broadcastMessage("The Blood Moon has ended.");
+
+        if (allPlayersStayedAlive) {
+            Bukkit.broadcastMessage("All players survived the Blood Moon rewards will be distributed.");
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                for (ItemStack reward : plugin.rewardService.getRewards(1, 2)) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), reward);
+                }
+            }
+        }
 
         plugin.mobHandler.globalMultiplier.remove(GLOBAL_MOB_MULTIPLIER);
         plugin.fearSystem.minimumFearLevel = 0.0;
@@ -130,6 +164,7 @@ public class BloodMoon extends SchedulerEvent implements Listener {
         }
 
         if (entity instanceof Player player) {
+            allPlayersStayedAlive = false;
             deaths.put(player, deaths.getOrDefault(player, 0) + 1);
         } else if (entity instanceof Monster && damager instanceof Player player) {
             kills.put(player, kills.getOrDefault(player, 0) + 1);
@@ -154,7 +189,6 @@ public class BloodMoon extends SchedulerEvent implements Listener {
         mob.setCustomName(String.format("Blood Moon %s", mob.getCustomName()));
         mob.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 1, false, false));
         mob.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 1, false, false));
-        mob.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1, false, false));
 
         Utils.haveMobTargetNearestPlayer(mob);
     }
@@ -244,7 +278,7 @@ public class BloodMoon extends SchedulerEvent implements Listener {
                     }
 
                     world.spawnEntity(new org.bukkit.Location(world, position[0], position[1], position[2]),
-                            org.bukkit.entity.EntityType.PRIMED_TNT);
+                            org.bukkit.entity.EntityType.TNT);
                 }
             }
         }.runTaskTimer(plugin, 0L, (long) Math.max(TNT_RAIN_FREQUENCY / plugin.levelSystem.levelMultiplier, 1L));

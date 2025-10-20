@@ -47,7 +47,7 @@ public class Level implements Listener {
         plugin.serverDataService.set(SAVED_LEVEL_KEY, newLevel);
         HarderMC.LOGGER.info(String.format("Level set to %d", newLevel));
         Bukkit.broadcastMessage(
-                String.format("Level set to %d (%%d difficulty)", newLevel, (int) (levelMultiplier * 100)));
+                String.format("Level set to %d (%d%% difficulty)", newLevel, (int) (levelMultiplier * 100)));
     }
 
     @EventHandler
@@ -59,7 +59,7 @@ public class Level implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         determineLevelFromPlayers();
         event.getPlayer()
-                .sendMessage(String.format("Current server level: %d (%%d difficulty)", level,
+                .sendMessage(String.format("Current server level: %d (%d%% difficulty)", level,
                         (int) (levelMultiplier * 100)));
     }
 }

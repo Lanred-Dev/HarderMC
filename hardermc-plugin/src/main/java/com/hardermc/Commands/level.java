@@ -19,7 +19,7 @@ public class level implements CommandExecutor {
         if (!(sender instanceof Player))
             return true;
 
-        sender.sendMessage(String.format("%d (%%d difficulty)", plugin.levelSystem.level,
+        sender.sendMessage(String.format("%d (%d%% difficulty)", plugin.levelSystem.level,
                 (int) (plugin.levelSystem.levelMultiplier * 100)));
         return true;
     }

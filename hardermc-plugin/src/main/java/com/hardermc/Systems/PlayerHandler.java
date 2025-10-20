@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -33,5 +34,10 @@ public class PlayerHandler implements Listener {
 
         double multiplier = hungerRateMultipliers.get(player).getTotal();
         event.setFoodLevel((int) Math.max(event.getFoodLevel() - (player.getExhaustion() * multiplier), 0));
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        event.setDroppedExp(0);
     }
 }

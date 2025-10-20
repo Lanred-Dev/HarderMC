@@ -11,22 +11,20 @@ import com.hardermc.HarderMC;
 
 public class Level implements Listener {
     private final static int BASE_TARGET_LEVEL = 25;
-    private static final String CURRENT_LEVEL_KEY = "level";
+    private static final String SAVED_LEVEL_KEY = "LEVEL";
     private final HarderMC plugin;
     public int level;
     public double levelMultiplier;
 
     public Level(HarderMC plugin) {
         this.plugin = plugin;
-        this.level = (int) plugin.serverDataService.get(CURRENT_LEVEL_KEY, 1);
-        this.levelMultiplier = 1.0;
-        determineLevelFromPlayers();
+        setLevel((int) plugin.serverDataService.get(SAVED_LEVEL_KEY, 0));
     }
 
     private void determineLevelFromPlayers() {
         HarderMC.LOGGER.info("Determining level based on online players");
 
-        int highestPlayerLevel = 1;
+        int highestPlayerLevel = 0;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             highestPlayerLevel = Math.max(highestPlayerLevel, player.getLevel());
@@ -46,9 +44,10 @@ public class Level implements Listener {
         levelMultiplier = ((newLevel / BASE_TARGET_LEVEL) * 0.5) + 0.5;
         plugin.mobHandler.globalMultiplier.add(levelMultiplier);
 
-        plugin.serverDataService.set(CURRENT_LEVEL_KEY, newLevel);
+        plugin.serverDataService.set(SAVED_LEVEL_KEY, newLevel);
         HarderMC.LOGGER.info(String.format("Level set to %d", newLevel));
-        Bukkit.broadcastMessage(String.format("Level set to %d (%.2fx difficulty)", newLevel, levelMultiplier));
+        Bukkit.broadcastMessage(
+                String.format("Level set to %d (%%d difficulty)", newLevel, (int) (levelMultiplier * 100)));
     }
 
     @EventHandler
@@ -60,6 +59,7 @@ public class Level implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         determineLevelFromPlayers();
         event.getPlayer()
-                .sendMessage(String.format("Current server level: %d (%.2fx difficulty)", level, levelMultiplier));
+                .sendMessage(String.format("Current server level: %d (%%d difficulty)", level,
+                        (int) (levelMultiplier * 100)));
     }
 }

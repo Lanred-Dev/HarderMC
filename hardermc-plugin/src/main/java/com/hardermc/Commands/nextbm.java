@@ -19,8 +19,13 @@ public class nextbm implements CommandExecutor {
         if (!(sender instanceof Player))
             return true;
 
-        Integer daysUntilBloodMoon = plugin.scheduler.getDaysUntilEvent(plugin.bloodMoonEvent.EVENT_ID());
-        sender.sendMessage(String.format("%d days until the next Blood Moon.", daysUntilBloodMoon));
+        if (plugin.bloodMoonEvent.isActive()) {
+            sender.sendMessage("A Blood Moon is currently active.");
+        } else {
+            int daysUntil = plugin.scheduler.getDaysUntilEvent(plugin.bloodMoonEvent.EVENT_ID());
+            sender.sendMessage(String.format("%d days until the next Blood Moon.", daysUntil));
+        }
+
         return true;
     }
 }

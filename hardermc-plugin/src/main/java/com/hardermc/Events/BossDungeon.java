@@ -43,7 +43,7 @@ public class BossDungeon extends SchedulerEvent implements Listener {
     };
     private static final List<Pair<Attribute, Double>> MULTIPLIED_BOSS_ATTRIBUTES = List.of(
             new Pair<>(Attribute.MAX_HEALTH, 5.0),
-            new Pair<>(Attribute.ATTACK_DAMAGE, 6.0),
+            new Pair<>(Attribute.ATTACK_DAMAGE, 2.75),
             new Pair<>(Attribute.MOVEMENT_SPEED, 1.25),
             new Pair<>(Attribute.FOLLOW_RANGE, 5.0),
             new Pair<>(Attribute.KNOCKBACK_RESISTANCE, 5.0));

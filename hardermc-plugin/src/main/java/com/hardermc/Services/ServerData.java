@@ -67,4 +67,8 @@ public class ServerData {
     public Object get(String key, Object defaultValue) {
         return data.getOrDefault(key, defaultValue);
     }
+
+    public boolean has(String key) {
+        return data.containsKey(key);
+    }
 }

@@ -6,13 +6,19 @@ import com.hardermc.Systems.Scheduler.TimeOfDay;
 public abstract class SchedulerEvent {
     protected final HarderMC plugin;
 
-    public abstract Integer EVENT_INTERVAL();
+    public abstract int EVENT_INTERVAL();
 
     public abstract TimeOfDay EVENT_STARTS_AT();
 
     public abstract TimeOfDay EVENT_ENDS_AT();
 
+    public abstract int EVENT_LASTS_FOR();
+
     public abstract String EVENT_ID();
+
+    public int EVENT_DELAY_BEFORE_FIRST_START() {
+        return 0;
+    }
 
     protected SchedulerEvent(HarderMC plugin) {
         this.plugin = plugin;
@@ -26,4 +32,7 @@ public abstract class SchedulerEvent {
     public abstract void start();
 
     public abstract void end();
+
+    public void onDayPassed() {
+    }
 }

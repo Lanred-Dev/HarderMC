@@ -1,6 +1,7 @@
 package com.hardermc.Events;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -21,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -40,6 +42,7 @@ public class BossDungeon extends SchedulerEvent implements Listener {
     public final NamespacedKey BOSS_KEY;
     private static final double ON_DEFEAT_REWARD_MULTIPLIER = 1.8;
     private static final String DUNGEON_STRUCTURE_FILE_NAME = "structures/boss_dungeon.nbt";
+    private static final String DUNGEON_LOCATION_KEY = "BOSS_DUNGEON_LOCATION";
     private static final EntityType[] BOSS_TYPES = {
             EntityType.ZOMBIE,
     };
@@ -133,7 +136,15 @@ public class BossDungeon extends SchedulerEvent implements Listener {
         hasEnded = false;
         offeringsInChest = 0;
 
-        loadStructure();
+        if (plugin.serverDataService.has(DUNGEON_LOCATION_KEY)) {
+            @SuppressWarnings("unchecked")
+            ArrayList<Double> savedLocation = (ArrayList<Double>) plugin.serverDataService.get(DUNGEON_LOCATION_KEY,
+                    null);
+            location = new Location(plugin.getServer().getWorld("world"), savedLocation.get(0), savedLocation.get(1),
+                    savedLocation.get(2));
+        }
+
+        spawnDungeonStructure(location);
 
         Bukkit.broadcastMessage(
                 String.format("A Boss Dungeon has appeared at (%d, %d, %d) and will expire in %d days.",
@@ -147,6 +158,7 @@ public class BossDungeon extends SchedulerEvent implements Listener {
             return;
 
         hasEnded = true;
+        plugin.serverDataService.remove(DUNGEON_LOCATION_KEY);
 
         if (!hasBeaten) {
             Bukkit.broadcastMessage("The Boss Dungeon has vanished...");
@@ -155,7 +167,7 @@ public class BossDungeon extends SchedulerEvent implements Listener {
         }
     }
 
-    private void loadStructure() {
+    private void spawnDungeonStructure(Location forcedLocation) {
         // This should never happen, but just in case
         if (dungeonStructure == null)
             return;
@@ -166,12 +178,23 @@ public class BossDungeon extends SchedulerEvent implements Listener {
             return;
 
         offering = Utils.randomEntryFromArray(OFFERINGS);
-        Location location = Utils.getRandomPositionAroundPlayer(
-                Utils.randomEntryFromArray(Bukkit.getOnlinePlayers().toArray(new Player[0])),
-                1500,
-                100,
-                5,
-                80);
+
+        if (forcedLocation != null) {
+            location = forcedLocation;
+        } else {
+            location = Utils.getRandomPositionAroundPlayer(
+                    Utils.randomEntryFromArray(Bukkit.getOnlinePlayers().toArray(new Player[0])),
+                    1500,
+                    100,
+                    -30,
+                    35);
+        }
+
+        plugin.serverDataService.set(DUNGEON_LOCATION_KEY, new double[] {
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ()
+        });
         dungeonStructure.place(
                 location,
                 false,
@@ -186,11 +209,19 @@ public class BossDungeon extends SchedulerEvent implements Listener {
         all: for (int x = 0; x < structureSize.getX(); x++) {
             for (int y = 0; y < structureSize.getY(); y++) {
                 for (int z = 0; z < structureSize.getZ(); z++) {
-                    Block block = world.getBlockAt(location.getBlockX() + x, location.getBlockY() + y,
+                    Block block = world.getBlockAt(
+                            location.getBlockX() + x,
+                            location.getBlockY() + y,
                             location.getBlockZ() + z);
+
+                    Material type = block.getType();
+                    if (type == Material.WATER || type == Material.LAVA)
+                        block.setType(Material.AIR);
 
                     if (!(block.getState() instanceof Chest chest))
                         continue;
+
+                    this.chest = chest;
 
                     ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
                     BookMeta meta = (BookMeta) book.getItemMeta();
@@ -200,8 +231,6 @@ public class BossDungeon extends SchedulerEvent implements Listener {
                     book.setItemMeta(meta);
                     chest.getInventory().addItem(book);
 
-                    this.chest = chest;
-
                     break all;
                 }
             }
@@ -210,24 +239,27 @@ public class BossDungeon extends SchedulerEvent implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!isActive() || chest == null || !event.getInventory().equals(chest.getInventory()))
+        Inventory chestInventory = event.getInventory();
+
+        if (!isActive() || chest == null || !chestInventory.getLocation().equals(chest.getLocation()))
             return;
 
         ItemStack placedItem = null;
 
         if (event.isShiftClick() && event.getClickedInventory().getType() == InventoryType.PLAYER) {
             placedItem = event.getCurrentItem();
-        } else if (event.getCursor() != null && event.getRawSlot() < event.getInventory().getSize()) {
+        } else if (event.getCursor() != null && event.getRawSlot() < chestInventory.getSize()) {
             placedItem = event.getCursor();
         }
 
         if (placedItem == null || !placedItem.isSimilar(offering))
             return;
 
+        // Delay by one tick to allow the item to be placed in the chest
         Bukkit.getScheduler().runTask(plugin, () -> {
             offeringsInChest = 0;
 
-            for (ItemStack item : chest.getInventory().getContents()) {
+            for (ItemStack item : chestInventory.getContents()) {
                 if (item == null || !item.isSimilar(offering))
                     continue;
 
@@ -235,7 +267,27 @@ public class BossDungeon extends SchedulerEvent implements Listener {
             }
 
             if (offeringsInChest >= offering.getAmount()) {
-                chest.getInventory().clear();
+                int amountToRemove = offering.getAmount();
+
+                for (int slot = 0; slot < chestInventory.getSize(); slot++) {
+                    ItemStack item = chestInventory.getItem(slot);
+
+                    if (item == null || !item.isSimilar(offering))
+                        continue;
+
+                    if (item.getAmount() > amountToRemove) {
+                        item.setAmount(item.getAmount() - amountToRemove);
+                        chestInventory.setItem(slot, item);
+                        break;
+                    } else {
+                        amountToRemove -= item.getAmount();
+                        chestInventory.setItem(slot, null);
+                    }
+
+                    if (amountToRemove <= 0)
+                        break;
+                }
+
                 spawnBoss();
             } else {
                 Bukkit.broadcastMessage(String.format("%d more offerings needed to start Boss Dungeon.",

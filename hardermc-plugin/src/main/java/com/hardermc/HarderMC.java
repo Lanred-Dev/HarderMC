@@ -8,8 +8,12 @@ import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.hardermc.Commands.bdloc;
+import com.hardermc.Commands.level;
 import com.hardermc.Commands.nextbm;
 import com.hardermc.Events.BloodMoon;
+import com.hardermc.Events.BossDungeon;
+import com.hardermc.Services.Reward;
 import com.hardermc.Services.ServerData;
 import com.hardermc.Systems.Fear;
 import com.hardermc.Systems.Level;
@@ -28,18 +32,22 @@ public class HarderMC extends JavaPlugin {
   public PlayerStatTracker playerStatTrackerSystem;
   public PlayerHandler playerHandlerSystem;
   public Fear fearSystem;
+  public BossDungeon bossDungeonEvent;
+  public Reward rewardService;
 
   public void onEnable() {
     LOGGER.info("HarderMC is enabled");
 
+    serverDataService = new ServerData(this);
     scheduler = new Scheduler(this);
     bloodMoonEvent = new BloodMoon(this);
     mobHandler = new MobHandler(this);
-    serverDataService = new ServerData(this);
     levelSystem = new Level(this);
     playerStatTrackerSystem = new PlayerStatTracker(this);
     playerHandlerSystem = new PlayerHandler();
     fearSystem = new Fear(this);
+    bossDungeonEvent = new BossDungeon(this);
+    rewardService = new Reward(this);
 
     PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(bloodMoonEvent, this);
@@ -48,8 +56,12 @@ public class HarderMC extends JavaPlugin {
     pluginManager.registerEvents(playerHandlerSystem, this);
     pluginManager.registerEvents(levelSystem, this);
     pluginManager.registerEvents(fearSystem, this);
+    pluginManager.registerEvents(bossDungeonEvent, this);
+    pluginManager.registerEvents(rewardService, this);
 
     getCommand("nextbm").setExecutor(new nextbm(this));
+    getCommand("bdloc").setExecutor(new bdloc(this));
+    getCommand("level").setExecutor(new level(this));
 
     World world = Bukkit.getWorld("world");
     if (world != null)

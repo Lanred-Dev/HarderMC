@@ -16,7 +16,7 @@ public final class Utils {
     public static final Map<Attribute, Double> MAX_ATTRIBUTE_VALUES = Map.ofEntries(
             Map.entry(Attribute.MAX_HEALTH, 1024.0),
             Map.entry(Attribute.ATTACK_DAMAGE, 2048.0),
-            Map.entry(Attribute.MOVEMENT_SPEED, 1024.0),
+            Map.entry(Attribute.MOVEMENT_SPEED, 5.0),
             Map.entry(Attribute.ATTACK_SPEED, 1024.0),
             Map.entry(Attribute.FOLLOW_RANGE, 2048.0),
             Map.entry(Attribute.KNOCKBACK_RESISTANCE, 1.0),

@@ -65,14 +65,21 @@ public class HarderMC extends JavaPlugin {
     getCommand("level").setExecutor(new level(this));
     getCommand("stats").setExecutor(new stats(this));
 
-    World world = Bukkit.getWorld("world");
-    if (world != null)
-      world.setDifficulty(Difficulty.HARD);
+    ensureDifficultyIsHard();
   }
 
   public void onDisable() {
     serverDataService.save();
 
     LOGGER.info("HarderMC is disabled");
+  }
+
+  private void ensureDifficultyIsHard() {
+    World world = Bukkit.getWorld("world");
+
+    if (world != null && world.getDifficulty() != Difficulty.HARD) {
+      LOGGER.info("Resetting world difficulty to HARD");
+      world.setDifficulty(Difficulty.HARD);
+    }
   }
 }

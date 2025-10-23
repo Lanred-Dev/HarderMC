@@ -57,9 +57,10 @@ public class MobHandler implements Listener {
                                         Utils.randomEntryFromArray(SPAWNABLE_MOB_TYPES));
 
                 for (Pair<Attribute, MultiplierGroup> attributePair : MULTIPLIED_MOB_ATTRIBUTES) {
+                        double totalMultiplier = attributePair.second().getTotal() * globalMultiplier.getTotal();
                         entity.getAttribute(attributePair.first()).setBaseValue(
                                         entity.getAttribute(attributePair.first()).getBaseValue()
-                                                        * attributePair.second().getTotal());
+                                                        * totalMultiplier);
                 }
 
                 entity.setCustomName(String.format("Level %d %s", plugin.levelSystem.level,

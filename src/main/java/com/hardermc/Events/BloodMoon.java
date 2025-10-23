@@ -104,6 +104,15 @@ public class BloodMoon extends SchedulerEvent implements Listener {
         broadcastStats();
     }
 
+    @Override
+    public void onDayPassed() {
+        if (isActive())
+            return;
+
+        Bukkit.broadcastMessage(
+                String.format("%d days until the Blood Moon.", plugin.scheduler.getDaysUntilEvent(EVENT_ID())));
+    }
+
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (!isActive())

@@ -96,6 +96,9 @@ public class BossDungeon extends SchedulerEvent implements Listener {
 
     @Override
     public void onDayPassed() {
+        if (!isActive())
+            return;
+
         Bukkit.broadcastMessage(
                 String.format("The Boss Dungeon has %d days left.", plugin.scheduler.getDaysLeftInEvent(EVENT_ID())));
     }

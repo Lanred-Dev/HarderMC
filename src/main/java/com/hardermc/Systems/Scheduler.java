@@ -57,6 +57,7 @@ public class Scheduler {
                                 daysUntilEvent--;
                                 eventTimers.put(eventID, daysUntilEvent);
                                 plugin.serverDataService.set(eventID, daysUntilEvent);
+                                event.onDayPassed();
                             }
                         } else if (currentTimeOfDay == event.EVENT_ENDS_AT() && isActive
                                 && currentEvents.get(eventID) <= 0) {

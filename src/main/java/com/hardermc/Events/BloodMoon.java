@@ -1,7 +1,9 @@
 package com.hardermc.Events;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -34,9 +36,12 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     private final static int TNT_RAIN_RADIUS = 30;
     private final static int TNT_RAIN_FREQUENCY = Utils.secondsToTicks(5);
     private static final double GLOBAL_MOB_MULTIPLIER = 5.0;
+    private static final double MINIMUM_FEAR_LEVEL = 3.0;
+    private static final double ALL_PLAYERS_SURVIVED_REWARD_MULTIPLIER = 2.0;
     private final Map<Player, Integer> kills = new HashMap<>();
     private final Map<Player, Integer> deaths = new HashMap<>();
     private boolean allPlayersStayedAlive = true;
+    private final Set<Player> playersAliveEntireTime = new HashSet<>();
 
     public BloodMoon(HarderMC plugin) {
         super(plugin);
@@ -77,8 +82,14 @@ public class BloodMoon extends SchedulerEvent implements Listener {
         kills.clear();
         deaths.clear();
 
+        playersAliveEntireTime.clear();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playersAliveEntireTime.add(player);
+        }
+
         plugin.mobHandler.globalMultiplier.add(GLOBAL_MOB_MULTIPLIER);
-        plugin.fearSystem.minimumFearLevel = 3.0;
+        plugin.fearSystem.minimumFearLevel = MINIMUM_FEAR_LEVEL;
 
         startLightningStorm();
         startTNTRain();
@@ -88,14 +99,21 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     public void end() {
         Bukkit.broadcastMessage("The Blood Moon has ended.");
 
-        if (allPlayersStayedAlive) {
-            Bukkit.broadcastMessage("All players survived the Blood Moon rewards will be distributed.");
+        double rewardMultiplier = 1.0;
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                for (ItemStack reward : plugin.rewardService.getRewards(1, 2)) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), reward);
-                }
+        if (allPlayersStayedAlive) {
+            Bukkit.broadcastMessage(String.format("All players survived. Rewards chances will be increased to %dx.",
+                    ALL_PLAYERS_SURVIVED_REWARD_MULTIPLIER));
+            rewardMultiplier = ALL_PLAYERS_SURVIVED_REWARD_MULTIPLIER;
+        }
+
+        for (Player player : playersAliveEntireTime) {
+            for (ItemStack reward : plugin.rewardService.getRewards(1 * rewardMultiplier,
+                    (int) (2 * rewardMultiplier))) {
+                player.getWorld().dropItemNaturally(player.getLocation(), reward);
             }
+
+            player.sendMessage("You have received your rewards.");
         }
 
         plugin.mobHandler.globalMultiplier.remove(GLOBAL_MOB_MULTIPLIER);
@@ -133,6 +151,9 @@ public class BloodMoon extends SchedulerEvent implements Listener {
         if (entity instanceof Player player) {
             allPlayersStayedAlive = false;
             deaths.put(player, deaths.getOrDefault(player, 0) + 1);
+
+            if (playersAliveEntireTime.contains(player))
+                playersAliveEntireTime.remove(player);
         } else if (entity instanceof Monster && damager instanceof Player player) {
             kills.put(player, kills.getOrDefault(player, 0) + 1);
         }
@@ -162,14 +183,11 @@ public class BloodMoon extends SchedulerEvent implements Listener {
 
     @EventHandler
     public void onSkeletonShoot(EntityShootBowEvent event) {
-        if (!(event.getEntity() instanceof Skeleton skeleton) || !isActive()
+        if (!(event.getEntity() instanceof Skeleton) || !isActive()
                 || !(event.getProjectile() instanceof Arrow arrow))
             return;
 
         arrow.setFireTicks(200);
-        Arrow extraArrow = skeleton.launchProjectile(Arrow.class);
-        extraArrow.setFireTicks(200);
-        extraArrow.setVelocity(arrow.getVelocity().multiply(1.2));
     }
 
     @EventHandler
@@ -178,6 +196,17 @@ public class BloodMoon extends SchedulerEvent implements Listener {
             return;
 
         event.getPlayer().sendMessage("Beware... a Blood Moon is currently active.");
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerJoinEvent event) {
+        if (!isActive())
+            return;
+
+        Player player = event.getPlayer();
+
+        if (playersAliveEntireTime.contains(player))
+            playersAliveEntireTime.remove(player);
     }
 
     private void broadcastStats() {

@@ -40,7 +40,7 @@ import com.hardermc.Systems.Scheduler.TimeOfDay;
 
 public class BossDungeon extends SchedulerEvent implements Listener {
     public final NamespacedKey BOSS_KEY;
-    private static final double ON_DEFEAT_REWARD_MULTIPLIER = 1.8;
+    private static final double ON_DEFEAT_REWARD_MULTIPLIER = 2.0;
     private static final String DUNGEON_STRUCTURE_FILE_NAME = "structures/boss_dungeon.nbt";
     private static final String DUNGEON_LOCATION_KEY = "BOSS_DUNGEON_LOCATION";
     private static final EntityType[] BOSS_TYPES = {

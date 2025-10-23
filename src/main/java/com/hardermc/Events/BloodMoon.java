@@ -30,10 +30,10 @@ import com.hardermc.Systems.Scheduler.TimeOfDay;
 
 public class BloodMoon extends SchedulerEvent implements Listener {
     private final static int LIGHTNING_STORM_RADIUS = 30;
-    private final static int LIGHTNING_STORM_FREQUENCY = Utils.secondsToTicks(5);
+    private final static int LIGHTNING_STORM_FREQUENCY = Utils.secondsToTicks(30);
     private final static int TNT_RAIN_RADIUS = 30;
-    private final static int TNT_RAIN_FREQUENCY = Utils.secondsToTicks(2.2);
-    private static final double GLOBAL_MOB_MULTIPLIER = 10.0;
+    private final static int TNT_RAIN_FREQUENCY = Utils.secondsToTicks(5);
+    private static final double GLOBAL_MOB_MULTIPLIER = 5.0;
     private final Map<Player, Integer> kills = new HashMap<>();
     private final Map<Player, Integer> deaths = new HashMap<>();
     private boolean allPlayersStayedAlive = true;

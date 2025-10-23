@@ -87,7 +87,7 @@ public class Fear implements Listener {
         if (inFear.getOrDefault(player, false))
             return;
 
-        HarderMC.LOGGER.info(String.format("Apply fear effects to %s", player.getName()));
+        HarderMC.LOGGER.info(String.format("Applying fear effects to %s", player.getName()));
 
         inFear.put(player, true);
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, DURATION, 1));
@@ -104,7 +104,7 @@ public class Fear implements Listener {
                     return;
 
                 inFear.put(player, false);
-                fearLevels.put(player, BREAK_THRESHOLD - 1.0);
+                fearLevels.put(player, Utils.clamp(BREAK_THRESHOLD / 2, minimumFearLevel, BREAK_THRESHOLD - 1.0));
             }
         }.runTaskLater(plugin, DURATION);
     }

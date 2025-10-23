@@ -1,8 +1,6 @@
 package com.hardermc.Events;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -28,7 +26,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.hardermc.HarderMC;
 import com.hardermc.Utils;
 import com.hardermc.Objects.SchedulerEvent;
-import com.hardermc.Systems.Scheduler;
 import com.hardermc.Systems.Scheduler.TimeOfDay;
 
 public class BloodMoon extends SchedulerEvent implements Listener {
@@ -36,16 +33,9 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     private final static int LIGHTNING_STORM_FREQUENCY = Utils.secondsToTicks(5);
     private final static int TNT_RAIN_RADIUS = 30;
     private final static int TNT_RAIN_FREQUENCY = Utils.secondsToTicks(2.2);
-    private final static Map<Integer, String> NIGHT_MARKERS = Map.ofEntries(
-            Map.entry(10, "You are 10% through the night."),
-            Map.entry(25, "You are 25% through the night."),
-            Map.entry(50, "You are halfway through the night."),
-            Map.entry(75, "You are 75% through the night."),
-            Map.entry(90, "You are 90% through the night."));
     private static final double GLOBAL_MOB_MULTIPLIER = 10.0;
     private final Map<Player, Integer> kills = new HashMap<>();
     private final Map<Player, Integer> deaths = new HashMap<>();
-    private List<Integer> broadcastedNightMarkers;
     private boolean allPlayersStayedAlive = true;
 
     public BloodMoon(HarderMC plugin) {
@@ -83,7 +73,6 @@ public class BloodMoon extends SchedulerEvent implements Listener {
         Bukkit.broadcastMessage("The Blood Moon is rising...");
 
         allPlayersStayedAlive = true;
-        broadcastedNightMarkers = new ArrayList<>();
 
         kills.clear();
         deaths.clear();
@@ -93,38 +82,6 @@ public class BloodMoon extends SchedulerEvent implements Listener {
 
         startLightningStorm();
         startTNTRain();
-
-        // Slow down time progression during blood moon (this effectively doubles the
-        // night time)
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!isActive()) {
-                    this.cancel();
-                    return;
-                }
-
-                World world = Bukkit.getWorld("world");
-
-                if (world == null)
-                    return;
-
-                long currentTime = world.getTime() - 10L;
-                world.setTime(currentTime);
-                double percentageThroughNight = ((double) (currentTime - Scheduler.NIGHT_START_TIME)
-                        / (Scheduler.NIGHT_END_TIME - Scheduler.NIGHT_START_TIME)) * 100.0;
-
-                for (Map.Entry<Integer, String> entry : NIGHT_MARKERS.entrySet()) {
-                    int key = entry.getKey();
-
-                    if (percentageThroughNight < key || broadcastedNightMarkers.contains(key))
-                        continue;
-
-                    Bukkit.broadcastMessage(entry.getValue());
-                    broadcastedNightMarkers.add(key);
-                }
-            }
-        }.runTaskTimer(plugin, 0L, 20L);
     }
 
     @Override

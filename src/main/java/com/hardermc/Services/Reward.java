@@ -16,26 +16,17 @@ public class Reward implements Listener {
     private static final double BASE_REWARD_MULTIPLIER = 0.3;
     private static final Map<ItemTier, List<ItemStack>> ITEMS = Map.ofEntries(
             Map.entry(ItemTier.COMMON, List.of(
-                    new ItemStack(Material.STONE_SWORD),
-                    new ItemStack(Material.LEATHER_HELMET),
-                    new ItemStack(Material.LEATHER_CHESTPLATE),
-                    new ItemStack(Material.LEATHER_LEGGINGS),
-                    new ItemStack(Material.LEATHER_BOOTS),
-                    new ItemStack(Material.IRON_INGOT, 8),
-                    new ItemStack(Material.BREAD, 5),
-                    new ItemStack(Material.STONE_PICKAXE),
-                    new ItemStack(Material.APPLE, 5))),
-            Map.entry(ItemTier.UNCOMMON, List.of(
                     new ItemStack(Material.IRON_SWORD),
-                    new ItemStack(Material.BOW),
                     new ItemStack(Material.IRON_HELMET),
                     new ItemStack(Material.IRON_CHESTPLATE),
+                    new ItemStack(Material.COOKED_BEEF, 5),
+                    new ItemStack(Material.IRON_PICKAXE),
+                    new ItemStack(Material.SHIELD))),
+            Map.entry(ItemTier.UNCOMMON, List.of(
+                    new ItemStack(Material.IRON_INGOT, 8),
                     new ItemStack(Material.IRON_LEGGINGS),
                     new ItemStack(Material.IRON_BOOTS),
-                    new ItemStack(Material.GOLD_INGOT, 5),
-                    new ItemStack(Material.COOKED_BEEF, 5),
                     new ItemStack(Material.CROSSBOW),
-                    new ItemStack(Material.IRON_PICKAXE),
                     new ItemStack(Material.SHIELD))),
             Map.entry(ItemTier.RARE, List.of(
                     new ItemStack(Material.DIAMOND_SWORD),
@@ -45,8 +36,7 @@ public class Reward implements Listener {
                     new ItemStack(Material.DIAMOND_BOOTS),
                     new ItemStack(Material.DIAMOND, 3),
                     new ItemStack(Material.EMERALD, 3),
-                    new ItemStack(Material.DIAMOND_PICKAXE),
-                    new ItemStack(Material.TOTEM_OF_UNDYING))),
+                    new ItemStack(Material.DIAMOND_PICKAXE))),
             Map.entry(ItemTier.EPIC, List.of(
                     new ItemStack(Material.NETHERITE_SWORD),
                     new ItemStack(Material.TRIDENT),
@@ -57,15 +47,15 @@ public class Reward implements Listener {
                     new ItemStack(Material.NETHERITE_INGOT, 2),
                     new ItemStack(Material.GOLDEN_APPLE, 2),
                     new ItemStack(Material.HEART_OF_THE_SEA),
-                    new ItemStack(Material.CROSSBOW),
-                    new ItemStack(Material.SHULKER_BOX))),
+                    new ItemStack(Material.CROSSBOW))),
             Map.entry(ItemTier.LEGENDARY, List.of(
                     new ItemStack(Material.ENCHANTED_GOLDEN_APPLE),
                     new ItemStack(Material.TOTEM_OF_UNDYING),
                     new ItemStack(Material.ELYTRA),
                     new ItemStack(Material.NETHERITE_SWORD),
                     new ItemStack(Material.NETHERITE_PICKAXE),
-                    new ItemStack(Material.TRIDENT))));
+                    new ItemStack(Material.TRIDENT),
+                    new ItemStack(Material.SHULKER_BOX))));
     private final HarderMC plugin;
 
     public Reward(HarderMC plugin) {

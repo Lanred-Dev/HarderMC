@@ -102,7 +102,7 @@ public class BossDungeon extends SchedulerEvent implements Listener {
 
     @Override
     public int EVENT_INTERVAL() {
-        return 14;
+        return 6;
     }
 
     @Override
@@ -122,12 +122,12 @@ public class BossDungeon extends SchedulerEvent implements Listener {
 
     @Override
     public int EVENT_LASTS_FOR() {
-        return 7;
+        return 3;
     }
 
     @Override
     public int EVENT_DELAY_BEFORE_FIRST_START() {
-        return 3;
+        return 1;
     }
 
     @Override

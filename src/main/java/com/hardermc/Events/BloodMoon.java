@@ -45,7 +45,7 @@ public class BloodMoon extends SchedulerEvent implements Listener {
 
     @Override
     public int EVENT_INTERVAL() {
-        return 7;
+        return 3;
     }
 
     @Override

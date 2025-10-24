@@ -37,5 +37,6 @@ public abstract class SchedulerEvent {
     public abstract void end();
 
     public void onDayPassed() {
+        return;
     }
 }

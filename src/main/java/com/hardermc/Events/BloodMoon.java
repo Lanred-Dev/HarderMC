@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -207,6 +209,14 @@ public class BloodMoon extends SchedulerEvent implements Listener {
 
         if (playersAliveEntireTime.contains(player))
             playersAliveEntireTime.remove(player);
+    }
+
+    @EventHandler
+    public void onTNTExplode(EntityExplodeEvent event) {
+        if (!isActive() || event.getEntityType() != EntityType.TNT)
+            return;
+
+        event.setYield(10F);
     }
 
     private void broadcastStats() {

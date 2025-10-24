@@ -29,7 +29,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 public class Fear implements Listener {
     private static final int DECAY_RATE = Utils.secondsToTicks(2);
     private static final double DECAY_AMOUNT = 1.0;
-    private static final int DURATION = Utils.secondsToTicks(60);
+    private static final int BREAK_DURATION = Utils.secondsToTicks(60);
     private static final double BREAK_THRESHOLD = 10.0;
     private static final double MAX_LEVEL = 10.0;
     private static final double OUTSIDE_LEVEL_INCREASE = 0.05;
@@ -88,14 +88,14 @@ public class Fear implements Listener {
             return;
 
         HarderMC.LOGGER.info(String.format("Applying fear effects to %s", player.getName()));
+        player.sendMessage("You feel a wave of fear wash over you...");
 
         inFear.put(player, true);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, DURATION, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, DURATION, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, DURATION, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, DURATION, 1, false, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, BREAK_DURATION, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, BREAK_DURATION, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, BREAK_DURATION, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, BREAK_DURATION, 1, false, false));
         player.playSound(player.getLocation(), Sound.ENTITY_WARDEN_HEARTBEAT, 1.0f, 1.0f);
-        player.sendMessage("You feel a wave of fear wash over you...");
 
         new BukkitRunnable() {
             @Override
@@ -106,7 +106,7 @@ public class Fear implements Listener {
                 inFear.put(player, false);
                 fearLevels.put(player, Utils.clamp(BREAK_THRESHOLD / 2, minimumFearLevel, BREAK_THRESHOLD - 1.0));
             }
-        }.runTaskLater(plugin, DURATION);
+        }.runTaskLaterAsynchronously(plugin, BREAK_DURATION);
     }
 
     private void updatePlayerFearBar(Player player, double playerFear) {

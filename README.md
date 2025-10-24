@@ -68,8 +68,6 @@ If a player reaches the breaking point, they receive:
 - Nausea
 - Blindness
 
----
-
 ### Stat Tracker
 
 HarderMC tracks global player statistics, including:

@@ -2,8 +2,6 @@
 
 A Paper plugin that makes Minecraft survival harder with events, stronger mobs, and a fear system.
 
----
-
 ## Requirements
 
 - Minecraft 1.21.8

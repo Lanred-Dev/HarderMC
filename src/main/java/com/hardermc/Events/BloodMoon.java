@@ -104,7 +104,7 @@ public class BloodMoon extends SchedulerEvent implements Listener {
         double rewardMultiplier = 1.0;
 
         if (allPlayersStayedAlive) {
-            Bukkit.broadcastMessage(String.format("All players survived. Rewards chances will be increased to %dx.",
+            Bukkit.broadcastMessage(String.format("All players survived. Rewards chances will be increased to %.1fx.",
                     ALL_PLAYERS_SURVIVED_REWARD_MULTIPLIER));
             rewardMultiplier = ALL_PLAYERS_SURVIVED_REWARD_MULTIPLIER;
         }

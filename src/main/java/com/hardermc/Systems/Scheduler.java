@@ -43,7 +43,7 @@ public class Scheduler {
                         ? TimeOfDay.NIGHT
                         : TimeOfDay.DAY;
 
-                if (lastTimeOfDay != currentTimeOfDay) {
+                if (lastTimeOfDay != currentTimeOfDay && Bukkit.getOnlinePlayers().size() > 0) {
                     for (SchedulerEvent event : scheduledEvents) {
                         boolean isActive = isEventActive(event.EVENT_ID());
                         String eventID = event.EVENT_ID();

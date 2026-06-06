@@ -10,7 +10,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
-/** Utility class for common helper functions */
 public final class Utils {
     public static final int TICKS_PER_SECOND = 20;
     public static final Map<Attribute, Double> MAX_ATTRIBUTE_VALUES = Map.ofEntries(

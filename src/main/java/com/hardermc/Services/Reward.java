@@ -3,10 +3,12 @@ package com.hardermc.Services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Player;
 
 import com.hardermc.HarderMC;
 import com.hardermc.Utils;
@@ -89,7 +91,7 @@ public class Reward implements Listener {
     public List<ItemStack> getRewards(double multiplierLevel, int rewardCount) {
         List<ItemStack> rewardedItems = new ArrayList<>();
 
-        for (int i = 0; i < rewardCount; i++) {
+        for (int index = 0; index < rewardCount; index++) {
             ItemStack item = Utils.randomEntryFromList(ITEMS.get(rollForTier(multiplierLevel)));
             rewardedItems.add(item.clone());
         }
@@ -101,6 +103,24 @@ public class Reward implements Listener {
         multiplierLevel = multiplierLevel * plugin.levelSystem.levelMultiplier * BASE_REWARD_MULTIPLIER;
         return getRewards(multiplierLevel,
                 Math.max(BASE_REWARD_COUNT, (int) Math.floor(BASE_REWARD_COUNT * multiplierLevel)));
+    }
+
+    public void givePlayersRewards(Set<Player> players, double multiplierLevel) {
+        givePlayersRewards(players, multiplierLevel, true);
+    }
+
+    public void givePlayersRewards(Set<Player> players, double multiplierLevel, boolean withMessages) {
+        for (Player player : players) {
+            if (withMessages)
+                player.sendMessage("You have received the following rewards:");
+
+            for (ItemStack reward : getRewards(multiplierLevel)) {
+                player.getWorld().dropItemNaturally(player.getLocation(), reward);
+
+                if (withMessages)
+                    player.sendMessage("- " + reward.getType().toString() + " x" + reward.getAmount());
+            }
+        }
     }
 
     private static ItemTier rollForTier(double multiplierLevel) {

@@ -22,7 +22,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -42,7 +41,7 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     private static final double ALL_PLAYERS_SURVIVED_REWARD_MULTIPLIER = 2.0;
     private final Map<Player, Integer> kills = new HashMap<>();
     private final Map<Player, Integer> deaths = new HashMap<>();
-    private boolean allPlayersStayedAlive = true;
+    private boolean allPlayersSurvived = true;
     private final Set<Player> playersAliveEntireTime = new HashSet<>();
 
     public BloodMoon(HarderMC plugin) {
@@ -79,11 +78,10 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     public void start() {
         Bukkit.broadcastMessage("The Blood Moon is rising...");
 
-        allPlayersStayedAlive = true;
+        allPlayersSurvived = true;
 
         kills.clear();
         deaths.clear();
-
         playersAliveEntireTime.clear();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -103,21 +101,13 @@ public class BloodMoon extends SchedulerEvent implements Listener {
 
         double rewardMultiplier = 1.0;
 
-        if (allPlayersStayedAlive) {
+        if (allPlayersSurvived) {
             Bukkit.broadcastMessage(String.format("All players survived. Rewards chances will be increased to %.1fx.",
                     ALL_PLAYERS_SURVIVED_REWARD_MULTIPLIER));
             rewardMultiplier = ALL_PLAYERS_SURVIVED_REWARD_MULTIPLIER;
         }
 
-        for (Player player : playersAliveEntireTime) {
-            for (ItemStack reward : plugin.rewardService.getRewards(1 * rewardMultiplier,
-                    (int) (2 * rewardMultiplier))) {
-                player.getWorld().dropItemNaturally(player.getLocation(), reward);
-            }
-
-            player.sendMessage("You have received your rewards.");
-        }
-
+        plugin.rewardService.givePlayersRewards(kills.keySet(), rewardMultiplier);
         plugin.mobHandler.globalMultiplier.remove(GLOBAL_MOB_MULTIPLIER);
         plugin.fearSystem.minimumFearLevel = 0.0;
 
@@ -151,7 +141,7 @@ public class BloodMoon extends SchedulerEvent implements Listener {
         }
 
         if (entity instanceof Player player) {
-            allPlayersStayedAlive = false;
+            allPlayersSurvived = false;
             deaths.put(player, deaths.getOrDefault(player, 0) + 1);
 
             if (playersAliveEntireTime.contains(player))
@@ -220,6 +210,11 @@ public class BloodMoon extends SchedulerEvent implements Listener {
     }
 
     private void broadcastStats() {
+        if (kills.isEmpty() && deaths.isEmpty()) {
+            Bukkit.broadcastMessage("No players participated in the Blood Moon.");
+            return;
+        }
+
         Bukkit.broadcastMessage("Heres how each player did during the Blood Moon:");
 
         for (Player player : kills.keySet()) {

@@ -8,20 +8,20 @@ import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.hardermc.Commands.bdloc;
-import com.hardermc.Commands.level;
-import com.hardermc.Commands.nextbm;
-import com.hardermc.Commands.stats;
-import com.hardermc.Events.BloodMoon;
-import com.hardermc.Events.BossDungeon;
-import com.hardermc.Services.Reward;
-import com.hardermc.Services.ServerData;
-import com.hardermc.Systems.Fear;
-import com.hardermc.Systems.Level;
-import com.hardermc.Systems.MobHandler;
-import com.hardermc.Systems.PlayerHandler;
-import com.hardermc.Systems.PlayerStatTracker;
-import com.hardermc.Systems.Scheduler;
+import com.hardermc.commands.bdloc;
+import com.hardermc.commands.level;
+import com.hardermc.commands.nextbm;
+import com.hardermc.commands.stats;
+import com.hardermc.events.BloodMoon;
+import com.hardermc.events.BossDungeon;
+import com.hardermc.services.Reward;
+import com.hardermc.services.ServerData;
+import com.hardermc.systems.common.Scheduler;
+import com.hardermc.systems.game.Level;
+import com.hardermc.systems.mob.MobHandler;
+import com.hardermc.systems.player.PlayerHandler;
+import com.hardermc.systems.player.PlayerStatTracker;
+import com.hardermc.systems.player.stats.Fear;
 
 public class HarderMC extends JavaPlugin {
   public static final Logger LOGGER = Logger.getLogger("HarderMC");

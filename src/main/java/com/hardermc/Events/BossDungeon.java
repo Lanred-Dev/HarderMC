@@ -1,4 +1,4 @@
-package com.hardermc.Events;
+package com.hardermc.events;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,9 +34,9 @@ import org.bukkit.util.BlockVector;
 
 import com.hardermc.HarderMC;
 import com.hardermc.Utils;
-import com.hardermc.Objects.Pair;
-import com.hardermc.Objects.SchedulerEvent;
-import com.hardermc.Systems.Scheduler.TimeOfDay;
+import com.hardermc.objects.Pair;
+import com.hardermc.objects.SchedulerEvent;
+import com.hardermc.systems.common.Scheduler.TimeOfDay;
 
 public class BossDungeon extends SchedulerEvent implements Listener {
     public final NamespacedKey BOSS_KEY;

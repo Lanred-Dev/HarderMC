@@ -1,4 +1,4 @@
-package com.hardermc.Systems;
+package com.hardermc.systems.player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.hardermc.Objects.MultiplierGroup;
+import com.hardermc.objects.MultiplierGroup;
 
 public class PlayerHandler implements Listener {
     private static final double MAX_HUNGER_RATE_MULTIPLIER = 3.0;

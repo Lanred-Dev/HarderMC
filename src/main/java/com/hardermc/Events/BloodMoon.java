@@ -1,4 +1,4 @@
-package com.hardermc.Events;
+package com.hardermc.events;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,8 +28,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.hardermc.HarderMC;
 import com.hardermc.Utils;
-import com.hardermc.Objects.SchedulerEvent;
-import com.hardermc.Systems.Scheduler.TimeOfDay;
+import com.hardermc.objects.SchedulerEvent;
+import com.hardermc.systems.common.Scheduler.TimeOfDay;
 
 public class BloodMoon extends SchedulerEvent implements Listener {
     private final static int LIGHTNING_STORM_RADIUS = 30;

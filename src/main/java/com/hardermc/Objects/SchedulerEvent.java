@@ -1,7 +1,7 @@
-package com.hardermc.Objects;
+package com.hardermc.objects;
 
 import com.hardermc.HarderMC;
-import com.hardermc.Systems.Scheduler.TimeOfDay;
+import com.hardermc.systems.common.Scheduler.TimeOfDay;
 
 public abstract class SchedulerEvent {
     protected final HarderMC plugin;

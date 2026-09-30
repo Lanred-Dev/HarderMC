@@ -1,4 +1,4 @@
-package com.hardermc.Commands;
+package com.hardermc.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

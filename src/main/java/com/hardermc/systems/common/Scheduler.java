@@ -1,4 +1,4 @@
-package com.hardermc.Systems;
+package com.hardermc.systems.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.hardermc.HarderMC;
-import com.hardermc.Objects.SchedulerEvent;
+import com.hardermc.objects.SchedulerEvent;
 
 public class Scheduler {
     public static final int NIGHT_START_TIME = 13000;

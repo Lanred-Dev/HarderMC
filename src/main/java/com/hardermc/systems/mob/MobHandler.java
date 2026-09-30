@@ -1,4 +1,4 @@
-package com.hardermc.Systems;
+package com.hardermc.systems.mob;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import com.hardermc.HarderMC;
 import com.hardermc.Utils;
-import com.hardermc.Objects.MultiplierGroup;
-import com.hardermc.Objects.Pair;
+import com.hardermc.objects.MultiplierGroup;
+import com.hardermc.objects.Pair;
 
 public class MobHandler implements Listener {
         private final HarderMC plugin;

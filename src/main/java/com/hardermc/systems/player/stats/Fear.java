@@ -1,4 +1,4 @@
-package com.hardermc.Systems;
+package com.hardermc.systems.player.stats;
 
 import java.util.HashMap;
 import java.util.Map;

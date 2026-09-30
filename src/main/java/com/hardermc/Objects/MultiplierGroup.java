@@ -1,4 +1,4 @@
-package com.hardermc.Objects;
+package com.hardermc.objects;
 
 import java.util.ArrayList;
 import java.util.List;

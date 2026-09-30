@@ -1,4 +1,4 @@
-package com.hardermc.Systems;
+package com.hardermc.systems.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

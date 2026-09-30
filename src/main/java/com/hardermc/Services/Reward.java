@@ -1,4 +1,4 @@
-package com.hardermc.Services;
+package com.hardermc.services;
 
 import java.util.ArrayList;
 import java.util.List;

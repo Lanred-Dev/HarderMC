@@ -18,7 +18,7 @@ public class ServerData {
     private final Map<String, Object> data = new HashMap<>();
 
     public ServerData(HarderMC plugin) {
-        // Paper doesn't auto-create the plugin folder
+        // The data folder is NOT created by default
         if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdirs();
             HarderMC.LOGGER.info("Plugin data folder created");

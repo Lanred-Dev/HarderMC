@@ -110,6 +110,9 @@ public class Reward implements Listener {
     }
 
     public void givePlayersRewards(Set<Player> players, double multiplierLevel, boolean withMessages) {
+        HarderMC.LOGGER.info(String.format("Giving rewards to %d players with multiplier level %.2f", players.size(),
+                multiplierLevel));
+
         for (Player player : players) {
             if (withMessages)
                 player.sendMessage("You have received the following rewards:");
@@ -142,7 +145,8 @@ public class Reward implements Listener {
                 return tier;
         }
 
-        // This should not happen but just in case
+        // This return statement should never be reached, but is required to satisfy the
+        // compiler
         return ItemTier.COMMON;
     }
 }
